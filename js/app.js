@@ -89,7 +89,7 @@ function showResults() {
   for (var i = 0; i < allItems.length; i++){
     var listItem = document.createElement('li');
     //Banana Slicer had 3 votes and was shown 5 times
-    listItem.textContent = `${allItems[i].title} had ${allItems[i].votes} votes and was shown ${allItems[i].views} times`;
+    listItem.textContent = `${allItems[i].title} had ${allItems[i].votes} votes and was shown ${allItems[i].views} times.`;
     unorderedL.appendChild(listItem);
   }
   parentEl.appendChild(unorderedL);
