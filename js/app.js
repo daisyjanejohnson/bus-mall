@@ -1,6 +1,8 @@
+/* eslint-disable no-undef */
 'use strict';
 
 var parent1 = document.getElementById('mall');
+var uniqueIndexArray = [];
 
 var allItems = [];
 
@@ -8,85 +10,96 @@ var clickCount = 0;
 
 var maxClicks = 25;
 
+var names = [];
 
-function ItemImage(filePath, alt, title) {
-  this.filePath = filePath;
-  this.alt = alt;
-  this.title = title;
+var votes = [];
+
+function ItemImage(name, extension) {
+  this.filePath = `imgs/${name}${extension}`;
+  this.alt = name;
+  this.title = name;
   this.votes = 0;
   this.views = 0;
   allItems.push(this);
 }
 
-new ItemImage('imgs/bag.jpg', 'bag', 'bag');
-new ItemImage('imgs/banana.jpg', 'banana', 'banana');
-new ItemImage('imgs/bathroom.jpg', 'bathroom', 'bathroom');
-new ItemImage('imgs/boots.jpg', 'boots', 'boots');
-new ItemImage('imgs/breakfast.jpg', 'breakfast', 'breakfast');
-new ItemImage('imgs/bubblegum.jpg', 'bubblegum', 'bubblegum');
-new ItemImage('imgs/chair.jpg', 'chair', 'chair');
-new ItemImage('imgs/cthulhu.jpg', 'cthulhu', 'cthulhu');
-new ItemImage('imgs/dog-duck.jpg', 'dog-duck', 'dog-duck');
-new ItemImage('imgs/dragon.jpg', 'dragon', 'dragon');
-new ItemImage('imgs/pen.jpg', 'pen', 'pen');
-new ItemImage('imgs/pet-sweep.jpg', 'pet-sweep', 'pet-sweep');
-new ItemImage('imgs/scissors.jpg', 'scissors', 'scissors');
-new ItemImage('imgs/shark.jpg', 'shark', 'shark');
-new ItemImage('imgs/sweep.png', 'sweep', 'sweep');
-new ItemImage('imgs/tauntaun.jpg', 'tauntaun', 'tauntaun');
-new ItemImage('imgs/unicorn.jpg', 'unicorn', 'unicorn');
-new ItemImage('imgs/usb.gif', 'usb', 'usb');
-new ItemImage('imgs/water-can.jpg', 'water-can', 'water-can');
-new ItemImage('imgs/wine-glass.jpg', 'wine-glass', 'wineglass');
+
+new ItemImage('bag', '.jpg');
+new ItemImage('banana', '.jpg');
+new ItemImage('bathroom', '.jpg');
+new ItemImage('boots', '.jpg');
+new ItemImage('breakfast', '.jpg');
+new ItemImage('bubblegum', '.jpg');
+new ItemImage('chair', '.jpg');
+new ItemImage('cthulhu', '.jpg');
+new ItemImage('dog-duck', '.jpg');
+new ItemImage('dragon', '.jpg');
+new ItemImage('pen', '.jpg');
+new ItemImage('pet-sweep', '.jpg');
+new ItemImage('scissors', '.jpg');
+new ItemImage('shark', '.jpg');
+new ItemImage('sweep', '.png');
+new ItemImage('tauntaun', '.jpg');
+new ItemImage('unicorn', '.jpg');
+new ItemImage('usb', '.gif');
+new ItemImage('water-can', '.jpg');
+new ItemImage('wine-glass', '.jpg');
+
 
 ItemImage.prototype.render = function () {
   //create an element -img
   var imageElement = document.createElement('img');
-  // fill the src with the path to the image
-  imageElement.setAttribute('src', this.filePath);
-  // fill in alt which is name of image w/o .jpeg
-  imageElement.setAttribute('alt', this.alt);
-  // fil in title with same thing as alt
-  imageElement.setAttribute('title', this.title);
-  //append to parent
+  imageElement.src = this.filePath;
+  imageElement.alt = this.alt;
+  imageElement.title = this.title;
   parent1.appendChild(imageElement);
 };
 
 //helper function
-function randomNumber(min = 0, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function randomNumber(max) {
+  return Math.floor(Math.random() * max);
 }
 // render three random images to dom from an array of images
 
 function getRandomItem() {
-  parent1.textContent = '';
 
   // call random number function to get random index position to generate random item from array
-  var randomIndex = randomNumber(0, allItems.length - 1);
-  var secondRandomIndex = randomNumber(0, allItems.length - 1);
-  var thirdRandomIndex = randomNumber(0, allItems.length - 1);
+  var randomIndex = randomNumber(allItems.length);
+  // var secondRandomIndex = randomNumber(0, allItems.length - 1);
+  // var thirdRandomIndex = randomNumber(0, allItems.length - 1);
 
   // while loop to make it so two of the same item do not generate at one time
-  while (randomIndex === secondRandomIndex || secondRandomIndex === thirdRandomIndex || randomIndex === thirdRandomIndex) {
-    secondRandomIndex = randomNumber(0, allItems.length - 1);
-    thirdRandomIndex = randomNumber(0, allItems.length - 1);
+  // while (randomIndex === secondRandomIndex || secondRandomIndex === thirdRandomIndex || randomIndex === thirdRandomIndex) {
+  //   secondRandomIndex = randomNumber(0, allItems.length - 1);
+  //   thirdRandomIndex = randomNumber(0, allItems.length - 1);
+  // }
+  while (uniqueIndexArray.includes(randomIndex)) {
+    randomIndex = randomNumber(allItems.length);
+  }
+  uniqueIndexArray.push(randomIndex);
+
+  if (uniqueIndexArray.length > 6) {
+    uniqueIndexArray.shift();
   }
 
   // use object instance to call render function
-  allItems[randomIndex].render();
+  // allItems[randomIndex].render();
   allItems[randomIndex].views++;
+  return randomIndex;
 
-  allItems[secondRandomIndex].render();
-  allItems[secondRandomIndex].views++;
-
-  allItems[thirdRandomIndex].render();
-  allItems[thirdRandomIndex].views++;
 }
+
+function displayImage() {
+  var index = getRandomItem();
+  allItems[index].render();
+}
+
+
 
 function showResults() {
   var parentEl = document.getElementById('results');
   var unorderedL = document.createElement('ul');
-  for (var i = 0; i < allItems.length; i++){
+  for (var i = 0; i < allItems.length; i++) {
     var listItem = document.createElement('li');
     //Banana Slicer had 3 votes and was shown 5 times
     listItem.textContent = `${allItems[i].title} had ${allItems[i].votes} votes and was shown ${allItems[i].views} times.`;
@@ -95,9 +108,10 @@ function showResults() {
   parentEl.appendChild(unorderedL);
 }
 // call the function!
-getRandomItem();
+
 
 function clickHandler(event) {
+  parent1.textContent=('');
   var titleOfItemThatWasClickedOn = event.target.title;
 
   for (var i = 0; i < allItems.length; i++) {
@@ -108,15 +122,76 @@ function clickHandler(event) {
   clickCount++;
   if (clickCount < maxClicks) {
     //call get random item function to genrate new items with a click
-    getRandomItem();
+
   } else {
     // we need to remove event listeners from parent1
     parent1.removeEventListener('click', clickHandler);
     // call results function
     showResults();
+    makeNameArray();
   }
+  displayImage();
+  displayImage();
+  displayImage();
 }
+
+displayImage();
+displayImage();
+displayImage();
 
 // Adding event listener so users can click on a certain item
 parent1.addEventListener('click', clickHandler);
 
+
+// loop over all of my items and make an array of just the names of my items
+function makeNameArray() {
+  for (var i = 0; i < allItems.length; i++) {
+    names.push(allItems[i].title);
+    votes.push(allItems[i].votes);
+  }
+
+  generateChart();
+}
+
+
+function generateChart() {
+  var ctx = document.getElementById('myChart').getContext('2d');
+
+  // eslint-disable-next-line no-unused-vars
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: names,
+      datasets: [{
+        label: '# of Votes',
+        data: votes,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}

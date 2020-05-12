@@ -1,4 +1,7 @@
 
 img{
-  width: 400px;
+  width: 20%;
+}
+canvas{
+  border: 2px solid black;
 }
