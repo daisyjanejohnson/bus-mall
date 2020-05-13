@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+
 'use strict';
 
 var parent1 = document.getElementById('mall');
@@ -13,6 +13,8 @@ var maxClicks = 25;
 var names = [];
 
 var votes = [];
+
+var views = [];
 
 function ItemImage(name, extension) {
   this.filePath = `imgs/${name}${extension}`;
@@ -148,6 +150,7 @@ function makeNameArray() {
   for (var i = 0; i < allItems.length; i++) {
     names.push(allItems[i].title);
     votes.push(allItems[i].votes);
+    views.push(allItems[i].views);
   }
 
   generateChart();
@@ -159,28 +162,20 @@ function generateChart() {
 
   // eslint-disable-next-line no-unused-vars
   var myChart = new Chart(ctx, {
-    type: 'bar',
+    type: 'horizontalBar',
     data: {
       labels: names,
       datasets: [{
         label: '# of Votes',
         data: votes,
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
+        backgroundColor: 'rgb(255,67,164)', // wild strawberry pink
+        borderColor: 'rgb(255,67,164)', // wild strawberry pink
+        borderWidth: 1
+      }, {
+        label: 'Views',
+        data: views,
+        backgroundColor: 'rgb(31,206,203)', // robin egg blue
+        borderColor: 'rgb(31,206,203)',// robin egg blue
         borderWidth: 1
       }]
     },
