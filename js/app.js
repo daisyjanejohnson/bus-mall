@@ -1,28 +1,67 @@
 'use strict';
-
 var parent1 = document.getElementById('mall');
 var uniqueIndexArray = [];
-
 var allItems = [];
-
 var clickCount = 0;
-
 var maxClicks = 25;
-
 var names = [];
-
 var votes = [];
-
 var views = [];
+// check our Local Storage to see if we have an array of products
+// if it looks in there and sees nothing in that key it returns a false
+if (localStorage.getItem('items') === null) {
+  // if we do NOT
+  // we need to instantiate our object instances for the first time like we have
+  new ItemImage('bag', '.jpg');
+  new ItemImage('banana', '.jpg');
+  new ItemImage('bathroom', '.jpg');
+  new ItemImage('boots', '.jpg');
+  new ItemImage('breakfast', '.jpg');
+  new ItemImage('bubblegum', '.jpg');
+  new ItemImage('chair', '.jpg');
+  new ItemImage('cthulhu', '.jpg');
+  new ItemImage('dog-duck', '.jpg');
+  new ItemImage('dragon', '.jpg');
+  new ItemImage('pen', '.jpg');
+  new ItemImage('pet-sweep', '.jpg');
+  new ItemImage('scissors', '.jpg');
+  new ItemImage('shark', '.jpg');
+  new ItemImage('sweep', '.png');
+  new ItemImage('tauntaun', '.jpg');
+  new ItemImage('unicorn', '.jpg');
+  new ItemImage('usb', '.gif');
+  new ItemImage('water-can', '.jpg');
+  new ItemImage('wine-glass', '.jpg');
 
-function ItemImage(name, extension) {
+} else {
+  // if we DO have products in local storage
+  // get them out
+  var localStorageItems = localStorage.getItem('items');
+  // parse them
+  var parsedLocalStorageArray = JSON.parse(localStorageItems);
+  // connect them back to our contructor
+  for (var i = 0; i < parsedLocalStorageArray.length; i++){
+    new ItemImage(parsedLocalStorageArray[i].title, parsedLocalStorageArray[i].filePath.slice(parsedLocalStorageArray[i].filePath.length-4), parsedLocalStorageArray[i].views, parsedLocalStorageArray[i].votes);
+  }
+  // use this as our allItems array
+
+}
+
+
+function ItemImage(name, extension, views=0, votes=0) {
   this.filePath = `imgs/${name}${extension}`;
   this.alt = name;
   this.title = name;
-  this.votes = 0;
-  this.views = 0;
+  this.votes = votes;
+  this.views = views;
   allItems.push(this);
 }
+
+
+
+
+
+
 
 ItemImage.prototype.render = function () {
   //create an element -img
@@ -30,59 +69,8 @@ ItemImage.prototype.render = function () {
   imageElement.src = this.filePath;
   imageElement.alt = this.alt;
   imageElement.title = this.title;
-
   parent1.appendChild(imageElement);
 };
-
-
-function startTest() {
-  var trackItems = localStorage.getItem('trackAllItems');
-  if (trackItems === null) {
-    new ItemImage('bag', '.jpg');
-    new ItemImage('banana', '.jpg');
-    new ItemImage('bathroom', '.jpg');
-    new ItemImage('boots', '.jpg');
-    new ItemImage('breakfast', '.jpg');
-    new ItemImage('bubblegum', '.jpg');
-    new ItemImage('chair', '.jpg');
-    new ItemImage('cthulhu', '.jpg');
-    new ItemImage('dog-duck', '.jpg');
-    new ItemImage('dragon', '.jpg');
-    new ItemImage('pen', '.jpg');
-    new ItemImage('pet-sweep', '.jpg');
-    new ItemImage('scissors', '.jpg');
-    new ItemImage('shark', '.jpg');
-    new ItemImage('sweep', '.png');
-    new ItemImage('tauntaun', '.jpg');
-    new ItemImage('unicorn', '.jpg');
-    new ItemImage('usb', '.gif');
-    new ItemImage('water-can', '.jpg');
-    new ItemImage('wine-glass', '.jpg');
-  } else {
-    trackItems = JSON.parse(trackItems);
-    console.log(trackItems);
-    for (var i = 0; i < trackItems.length; i++) {
-      var item = trackItems[i]
-      var filePath = item.filePath;
-      var votes = item.votes;
-      var views = item.views;
-      new ItemImage(filePath, votes, views);
-    }
-  }
-  var trackVotes = localStorage.getItem('trackVoteTotal');
-  if (trackVotes === null) {
-    clickCount = 0;
-  } else {
-    clickCount = parseInt(trackVotes);
-  }
-  displayImage();
-  displayImage();
-  displayImage();
-}
-
-startTest();
-
-
 
 //helper function
 function randomNumber(max) {
@@ -129,7 +117,7 @@ function showResults() {
   parentEl.appendChild(unorderedL);
 }
 // call the function!
-
+getRandomItem();
 
 function clickHandler(event) {
   parent1.textContent = ('');
@@ -138,22 +126,24 @@ function clickHandler(event) {
   for (var i = 0; i < allItems.length; i++) {
     if (titleOfItemThatWasClickedOn === allItems[i].title) {
       allItems[i].votes++;
+      clickCount++;
+
+      // save our all ITems array into local storage
+      var stringifiedAllItemsArray = JSON.stringify(allItems);
+      localStorage.setItem('items',stringifiedAllItemsArray);
+
+
+      if (clickCount === maxClicks) {
+        //call get random item function to genrate new items with a click
+        // we need to remove event listeners from parent1
+        parent1.removeEventListener('click', clickHandler);
+        // call results function
+        showResults();
+        makeNameArray();
+
+      }
     }
   }
-  clickCount++;
-  if (clickCount < maxClicks) {
-    //call get random item function to genrate new items with a click
-
-  // } else {
-    // we need to remove event listeners from parent1
-    parent1.removeEventListener('click', clickHandler);
-    // call results function
-    showResults();
-    makeNameArray();
-  } else {
-  localStorage.setITem('trackAllItems', JSON.stringify(allItems));
-  localStorage.setItem('trackVoteTotal', clickCount);
-
 
   displayImage();
   displayImage();
@@ -213,3 +203,4 @@ function generateChart() {
     }
   });
 }
+
