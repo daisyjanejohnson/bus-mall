@@ -1,4 +1,3 @@
-
 'use strict';
 
 var parent1 = document.getElementById('mall');
@@ -25,37 +24,65 @@ function ItemImage(name, extension) {
   allItems.push(this);
 }
 
-
-new ItemImage('bag', '.jpg');
-new ItemImage('banana', '.jpg');
-new ItemImage('bathroom', '.jpg');
-new ItemImage('boots', '.jpg');
-new ItemImage('breakfast', '.jpg');
-new ItemImage('bubblegum', '.jpg');
-new ItemImage('chair', '.jpg');
-new ItemImage('cthulhu', '.jpg');
-new ItemImage('dog-duck', '.jpg');
-new ItemImage('dragon', '.jpg');
-new ItemImage('pen', '.jpg');
-new ItemImage('pet-sweep', '.jpg');
-new ItemImage('scissors', '.jpg');
-new ItemImage('shark', '.jpg');
-new ItemImage('sweep', '.png');
-new ItemImage('tauntaun', '.jpg');
-new ItemImage('unicorn', '.jpg');
-new ItemImage('usb', '.gif');
-new ItemImage('water-can', '.jpg');
-new ItemImage('wine-glass', '.jpg');
-
-
 ItemImage.prototype.render = function () {
   //create an element -img
   var imageElement = document.createElement('img');
   imageElement.src = this.filePath;
   imageElement.alt = this.alt;
   imageElement.title = this.title;
+
   parent1.appendChild(imageElement);
 };
+
+
+function startTest() {
+  var trackItems = localStorage.getItem('trackAllItems');
+  if (trackItems === null) {
+    new ItemImage('bag', '.jpg');
+    new ItemImage('banana', '.jpg');
+    new ItemImage('bathroom', '.jpg');
+    new ItemImage('boots', '.jpg');
+    new ItemImage('breakfast', '.jpg');
+    new ItemImage('bubblegum', '.jpg');
+    new ItemImage('chair', '.jpg');
+    new ItemImage('cthulhu', '.jpg');
+    new ItemImage('dog-duck', '.jpg');
+    new ItemImage('dragon', '.jpg');
+    new ItemImage('pen', '.jpg');
+    new ItemImage('pet-sweep', '.jpg');
+    new ItemImage('scissors', '.jpg');
+    new ItemImage('shark', '.jpg');
+    new ItemImage('sweep', '.png');
+    new ItemImage('tauntaun', '.jpg');
+    new ItemImage('unicorn', '.jpg');
+    new ItemImage('usb', '.gif');
+    new ItemImage('water-can', '.jpg');
+    new ItemImage('wine-glass', '.jpg');
+  } else {
+    trackItems = JSON.parse(trackItems);
+    console.log(trackItems);
+    for (var i = 0; i < trackItems.length; i++) {
+      var item = trackItems[i]
+      var filePath = item.filePath;
+      var votes = item.votes;
+      var views = item.views;
+      new ItemImage(filePath, votes, views);
+    }
+  }
+  var trackVotes = localStorage.getItem('trackVoteTotal');
+  if (trackVotes === null) {
+    clickCount = 0;
+  } else {
+    clickCount = parseInt(trackVotes);
+  }
+  displayImage();
+  displayImage();
+  displayImage();
+}
+
+startTest();
+
+
 
 //helper function
 function randomNumber(max) {
@@ -67,14 +94,6 @@ function getRandomItem() {
 
   // call random number function to get random index position to generate random item from array
   var randomIndex = randomNumber(allItems.length);
-  // var secondRandomIndex = randomNumber(0, allItems.length - 1);
-  // var thirdRandomIndex = randomNumber(0, allItems.length - 1);
-
-  // while loop to make it so two of the same item do not generate at one time
-  // while (randomIndex === secondRandomIndex || secondRandomIndex === thirdRandomIndex || randomIndex === thirdRandomIndex) {
-  //   secondRandomIndex = randomNumber(0, allItems.length - 1);
-  //   thirdRandomIndex = randomNumber(0, allItems.length - 1);
-  // }
   while (uniqueIndexArray.includes(randomIndex)) {
     randomIndex = randomNumber(allItems.length);
   }
@@ -113,7 +132,7 @@ function showResults() {
 
 
 function clickHandler(event) {
-  parent1.textContent=('');
+  parent1.textContent = ('');
   var titleOfItemThatWasClickedOn = event.target.title;
 
   for (var i = 0; i < allItems.length; i++) {
@@ -125,13 +144,17 @@ function clickHandler(event) {
   if (clickCount < maxClicks) {
     //call get random item function to genrate new items with a click
 
-  } else {
+  // } else {
     // we need to remove event listeners from parent1
     parent1.removeEventListener('click', clickHandler);
     // call results function
     showResults();
     makeNameArray();
-  }
+  } else {
+  localStorage.setITem('trackAllItems', JSON.stringify(allItems));
+  localStorage.setItem('trackVoteTotal', clickCount);
+
+
   displayImage();
   displayImage();
   displayImage();
