@@ -1,4 +1,6 @@
 'use strict';
+
+// Global Variables
 var parent1 = document.getElementById('mall');
 var uniqueIndexArray = [];
 var allItems = [];
@@ -47,7 +49,7 @@ if (localStorage.getItem('items') === null) {
 
 }
 
-
+// Constructor Function for Images
 function ItemImage(name, extension, views=0, votes=0) {
   this.filePath = `imgs/${name}${extension}`;
   this.alt = name;
@@ -62,7 +64,7 @@ function ItemImage(name, extension, views=0, votes=0) {
 
 
 
-
+// render images to the page function
 ItemImage.prototype.render = function () {
   //create an element -img
   var imageElement = document.createElement('img');
@@ -98,13 +100,14 @@ function getRandomItem() {
 
 }
 
+// display a random image
 function displayImage() {
   var index = getRandomItem();
   allItems[index].render();
 }
 
 
-
+// renders results of what user has input onto a UL
 function showResults() {
   var parentEl = document.getElementById('results');
   var unorderedL = document.createElement('ul');
@@ -119,6 +122,7 @@ function showResults() {
 // call the function!
 getRandomItem();
 
+// Makes a new set of images generate when clicked, and stops after 25 rounds
 function clickHandler(event) {
   parent1.textContent = ('');
   var titleOfItemThatWasClickedOn = event.target.title;
@@ -136,6 +140,7 @@ function clickHandler(event) {
       if (clickCount === maxClicks) {
         //call get random item function to genrate new items with a click
         // we need to remove event listeners from parent1
+        alert('Thanks for Voting! Your voting results are below!');
         parent1.removeEventListener('click', clickHandler);
         // call results function
         showResults();
@@ -169,7 +174,7 @@ function makeNameArray() {
   generateChart();
 }
 
-
+// Makes the results chart on bottom of the page
 function generateChart() {
   var ctx = document.getElementById('myChart').getContext('2d');
 
