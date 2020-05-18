@@ -3,11 +3,8 @@
   width: 100%;
   height: 200px;
   background-color: #99A1A6;
-  background-image: url('imgs/pexels-photo-2942172.jpeg');
-  background-repeat: no-repeat;
-  background-position: center;
-  
 }
+
 .headGroup{
   height: 200px;
   text-align: center;
