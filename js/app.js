@@ -178,7 +178,7 @@ function makeNameArray() {
 function generateChart() {
   var ctx = document.getElementById('myChart').getContext('2d');
 
-  // eslint-disable-next-line no-unused-vars
+
   var myChart = new Chart(ctx, {
     type: 'horizontalBar',
     data: {

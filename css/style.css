@@ -61,3 +61,9 @@ img{
 canvas{
   width: 600px;
 }
+footer{
+  height: 50px;
+  background-color:#99A1A6;
+  color: black;
+  font-family: 'Gloria Hallelujah', cursive;
+}
